@@ -218,5 +218,3 @@ MIT License
 ## 友情链接
 
 - [Linux DO](https://linux.do/)
-
-以上链接仅作为社区参考，不代表本项目与对应社区存在官方合作关系。
