@@ -12,7 +12,7 @@ using UnityEngine.UI;
 
 namespace CozyIslandReadAloud
 {
-    [BepInPlugin("com.yangmie.cozyisland.readaloud", "CozyIsland Read Aloud", "0.1.0")]
+    [BepInPlugin("com.yangmie.cozyisland.readaloud", "CozyIsland Read Aloud", "0.1.1")]
     public sealed class Plugin : BaseUnityPlugin
     {
         private static readonly Regex RichTextTagPattern = new Regex("<[^>]+>", RegexOptions.Compiled);

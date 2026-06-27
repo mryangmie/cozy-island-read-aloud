@@ -39,6 +39,8 @@ namespace CozyIslandReadAloud
         private static readonly Regex RichTextTagPattern = new Regex("<[^>]+>", RegexOptions.Compiled);
         private static readonly Regex WhitespacePattern = new Regex("\\s+", RegexOptions.Compiled);
         private static readonly Regex MaterialCountPattern = new Regex("^(.+?)[（(]\\s*(\\d+)\\s*/\\s*(\\d+)\\s*[）)]$", RegexOptions.Compiled);
+        private static readonly Regex MaterialRequirementPattern = new Regex("([^\\s。！？!?；;、，,（）()]+)[（(]\\s*(\\d+)\\s*/\\s*(\\d+)\\s*[）)]", RegexOptions.Compiled);
+        private static readonly Regex WorkbenchStatusPattern = new Regex("[（(]([^（）()]*不足[^（）()]*)[）)]", RegexOptions.Compiled);
 
         private const uint SndAsync = 0x0001;
         private const uint SndFilename = 0x00020000;
@@ -645,7 +647,7 @@ namespace CozyIslandReadAloud
         {
             spoken = string.Empty;
 
-            if (!ContainsExactText(candidates, "材料列表"))
+            if (!ContainsTextPart(candidates, "材料列表"))
             {
                 return false;
             }
@@ -697,6 +699,27 @@ namespace CozyIslandReadAloud
                 if (text == "材料列表")
                 {
                     inMaterials = true;
+                    continue;
+                }
+
+                var materialListIndex = text.IndexOf("材料列表", StringComparison.Ordinal);
+                if (materialListIndex >= 0)
+                {
+                    var before = text.Substring(0, materialListIndex).Trim();
+                    if (!string.IsNullOrWhiteSpace(before))
+                    {
+                        if (string.IsNullOrEmpty(title))
+                        {
+                            title = before;
+                        }
+                        else if (string.IsNullOrEmpty(description) && !title.Contains(before) && !before.Contains(title))
+                        {
+                            description = before;
+                        }
+                    }
+
+                    inMaterials = true;
+                    AddMaterialRequirements(text.Substring(materialListIndex + "材料列表".Length), materials, ref status);
                     continue;
                 }
 
@@ -789,6 +812,34 @@ namespace CozyIslandReadAloud
             }
 
             return match.Groups[1].Value + "，已有" + match.Groups[2].Value + "个，需要" + match.Groups[3].Value + "个";
+        }
+
+        private static void AddMaterialRequirements(string text, List<string> materials, ref string status)
+        {
+            if (string.IsNullOrWhiteSpace(text))
+            {
+                return;
+            }
+
+            var compact = text.Replace(" ", string.Empty);
+            foreach (Match match in MaterialRequirementPattern.Matches(compact))
+            {
+                var material = match.Groups[1].Value + "，已有" + match.Groups[2].Value + "个，需要" + match.Groups[3].Value + "个";
+                if (!materials.Contains(material))
+                {
+                    materials.Add(material);
+                }
+            }
+
+            var statusMatch = WorkbenchStatusPattern.Match(compact);
+            if (statusMatch.Success)
+            {
+                status = statusMatch.Groups[1].Value.Trim();
+            }
+            else if (compact.Contains("不足"))
+            {
+                status = CleanParenthesizedText(compact);
+            }
         }
 
         private static string CleanParenthesizedText(string text)

@@ -23,13 +23,13 @@
 普通玩家不需要自己编译源码，建议直接到 Releases 下载插件包：
 
 ```text
-CozyIslandReadAloud-v0.1.0.zip
+CozyIslandReadAloud-v0.1.1.zip
 ```
 
 如果希望减少第一次朗读时的等待，可以额外下载可选语音缓存包：
 
 ```text
-CozyIslandReadAloud-mimo-tts-cache-zh-CN-v0.1.0.zip
+CozyIslandReadAloud-mimo-tts-cache-zh-CN-v0.1.1.zip
 ```
 
 安装步骤：
@@ -47,7 +47,7 @@ CozyIsland/BepInEx/plugins/CozyIslandReadAloud/
 
 可选语音缓存包的使用方法：
 
-1. 解压 `CozyIslandReadAloud-mimo-tts-cache-zh-CN-v0.1.0.zip`。
+1. 解压 `CozyIslandReadAloud-mimo-tts-cache-zh-CN-v0.1.1.zip`。
 2. 把里面的 `audio_cache` 文件夹复制到插件目录：
 
 ```text
@@ -197,6 +197,5 @@ MIT License
 ## 友情链接
 
 - [Linux DO](https://linux.do/)
-- [M-JYuan/Koma](https://github.com/M-JYuan/Koma)
 
-以上链接仅作为社区与开源项目参考，不代表本项目与对应项目存在从属或官方合作关系。
+以上链接仅作为社区参考，不代表本项目与对应社区存在官方合作关系。
