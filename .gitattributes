@@ -7,3 +7,4 @@
 *.mjs text eol=lf
 
 *.wav binary
+*.png binary
