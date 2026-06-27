@@ -26,6 +26,12 @@
 CozyIslandReadAloud-v0.1.0.zip
 ```
 
+如果希望减少第一次朗读时的等待，可以额外下载可选语音缓存包：
+
+```text
+CozyIslandReadAloud-mimo-tts-cache-zh-CN-v0.1.0.zip
+```
+
 安装步骤：
 
 1. 先给游戏安装 BepInEx 5 x64。
@@ -38,6 +44,15 @@ CozyIsland/BepInEx/plugins/CozyIslandReadAloud/
 
 4. 启动游戏。
 5. 进入游戏界面后按 `G/H/J/K` 测试朗读。
+
+可选语音缓存包的使用方法：
+
+1. 解压 `CozyIslandReadAloud-mimo-tts-cache-zh-CN-v0.1.0.zip`。
+2. 把里面的 `audio_cache` 文件夹复制到插件目录：
+
+```text
+CozyIsland/BepInEx/plugins/CozyIslandReadAloud/audio_cache/
+```
 
 如果某段文字第一次没有本地语音缓存，插件会调用 Windows TTS 生成一次。之后再次遇到相同文本，会直接播放本地缓存。
 
@@ -61,6 +76,22 @@ CozyIsland/BepInEx/plugins/CozyIslandReadAloud/
 - 插件运行时读取的是当前可见 UI 文本，普通使用不需要玩家提前提取文本。
 
 所以这个仓库只开源插件代码、少量测试音频和辅助脚本。可安装的插件包会放在 GitHub Releases。
+
+Release 里的语音缓存包只包含 `.wav` 音频文件，不包含 `.txt` 文本文件。音频内容仍可能对应游戏中的可见文本，若介意版权边界，可以不下载缓存包，改用插件本地 Windows TTS 按需生成。
+
+## 语音来源说明
+
+项目里提到的 MiMo，是小米开放平台的文字转语音模型。`冰糖` 是 MiMo 预置音色名，不是本项目自己定义的角色名。
+
+当前语音策略：
+
+- 预生成语音使用 MiMo V2.5 TTS。
+- 预生成音色使用 `冰糖`，偏清晰、活泼的中文女声。
+- 游戏运行时不会联网调用 MiMo API。
+- 插件只会读取本地 MiMo 缓存文件。
+- 没有命中 MiMo 缓存时，才会调用 Windows 本机 TTS 生成语音。
+
+如果你不使用 MiMo，也可以只依赖 Windows TTS。第一次读某段文字时会慢一点，生成完成后会缓存到本地。
 
 ## 语音缓存说明
 
