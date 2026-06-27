@@ -1,51 +1,93 @@
-# Cozy Island Read Aloud
+# 舒舒服服小岛时光文字朗读插件
 
-舒舒服服小岛时光 / Cozy Island 的文字朗读学习插件。这个项目主要给小朋友认字学习使用：在游戏过程中按键朗读当前界面文字，让游戏里的材料、配方、任务和剧情文本变成可听、可跟读的学习内容。
+这是一个给《舒舒服服小岛时光 / Cozy Island》做的文字朗读学习插件。它的目标很简单：小朋友在玩游戏时，可以按键朗读当前界面文字，把材料、配方、任务、成就和剧情内容变成可听、可跟读的学习材料。
 
-> 本项目不是游戏官方项目，不包含游戏本体、游戏资源、游戏 DLL、提取出的完整游戏文本或商业语音缓存。
+> 本项目不是游戏官方项目，不包含游戏本体、游戏资源、游戏 DLL、完整游戏文案、商业语音缓存或任何账号凭证。
 
-## Features
+## 功能特性
 
 - 基于 BepInEx 5 加载，不修改游戏本体文件。
 - 支持键盘朗读：
-  - `G`：当前主要内容。
-  - `H`：左上角任务清单。
-  - `J`：左下角成就区域。
-  - `K`：右下角操作提示。
-- 自动扫描 Unity UI / TextMeshPro 文本。
-- 针对工作台/制作界面做摘要朗读，只读当前选中配方的名称、说明、材料需求和状态。
-- 优先播放本地 MiMo TTS 缓存。
-- 缓存未命中时，使用 Windows 本机 TTS 生成 WAV，并保存到本地缓存。
-- 预生成语音缓存可以单独打包，不需要放进源码仓库。
+  - `G`：朗读当前主要内容。
+  - `H`：朗读左上角任务清单。
+  - `J`：朗读左下角成就区域。
+  - `K`：朗读右下角操作提示。
+- 自动扫描当前可见的 Unity UI / TextMeshPro 文本。
+- 针对工作台、制作界面做摘要朗读，只读当前选中配方的名称、说明、材料需求和状态。
+- 优先播放本地 MiMo TTS 语音缓存。
+- 缓存未命中时，使用 Windows 本机 TTS 生成 WAV，并保存为本地缓存。
+- 顶部只显示很小的 `G/H/J/K` 提示，尽量不遮挡游戏画面。
 
-## Repository Scope
+## 下载与安装
 
-这个仓库只适合保存插件源码和辅助脚本：
+普通玩家不需要自己编译源码，建议直接到 Releases 下载插件包：
 
-- `src/CozyIslandReadAloud/`：BepInEx 插件源码。
-- `tools/`：TTS 缓存生成脚本。
-- `audio/zh-CN/`：少量测试音频。
-- `build-package.ps1`：构建插件包。
-- `install-to-game.ps1`：安装到本地游戏目录。
+```text
+CozyIslandReadAloud-v0.1.0.zip
+```
 
-这些内容不应该提交到仓库：
+安装步骤：
 
-- `audio_cache/`：本地 TTS 缓存，体积较大。
-- `learning_text/`：本地学习文本和游戏文案提取结果。
-- `deps/`：第三方依赖和本地 BepInEx 包。
+1. 先给游戏安装 BepInEx 5 x64。
+2. 下载 Release 里的插件 zip。
+3. 解压后，把 `CozyIslandReadAloud` 文件夹放到游戏目录：
+
+```text
+CozyIsland/BepInEx/plugins/CozyIslandReadAloud/
+```
+
+4. 启动游戏。
+5. 进入游戏界面后按 `G/H/J/K` 测试朗读。
+
+如果某段文字第一次没有本地语音缓存，插件会调用 Windows TTS 生成一次。之后再次遇到相同文本，会直接播放本地缓存。
+
+## 为什么没有提交完整游戏文案
+
+仓库里有一些目录被 `.gitignore` 忽略，这是有意设计，不是漏传。
+
+没有提交的内容包括：
+
+- `learning_text/`：本地提取出的学习文本和游戏文案片段。
+- `audio_cache/`：本地生成的大量语音缓存。
+- `deps/`：本地 BepInEx 依赖包。
 - `dist/`：构建产物。
 - `bin/`、`obj/`、`tmp/`：编译和临时文件。
-- 任何游戏本体文件、游戏资源、API Key 或账号凭证。
 
-## Requirements
+原因：
+
+- 完整游戏文案属于游戏内容，公开传播可能有版权风险。
+- 语音缓存通常是根据游戏文本生成的，也不适合直接放进源码仓库。
+- 缓存体积较大，会让 git 仓库变得很重。
+- 插件运行时读取的是当前可见 UI 文本，普通使用不需要玩家提前提取文本。
+
+所以这个仓库只开源插件代码、少量测试音频和辅助脚本。可安装的插件包会放在 GitHub Releases。
+
+## 语音缓存说明
+
+插件朗读时的查找顺序：
+
+1. MiMo 预生成 WAV 缓存。
+2. MiMo 分段缓存。
+3. Windows TTS WAV 缓存。
+4. Windows TTS 现场生成并保存缓存。
+
+默认缓存位置：
+
+```text
+audio_cache/mimo/zh-CN/
+audio_cache/windows/zh-CN/
+```
+
+从 Release zip 安装时，缓存会保存在插件目录下。用源码安装时，缓存会保存在本项目目录下。
+
+## 从源码构建
+
+准备条件：
 
 - Windows
-- Steam 版 Cozy Island / 舒舒服服小岛时光
+- Steam 版《舒舒服服小岛时光 / Cozy Island》
 - .NET SDK
 - BepInEx 5 x64
-- 可选：MiMo TTS API，用于批量预生成语音缓存
-
-## Build
 
 把 BepInEx 5 x64 解压到本项目的 `deps/` 目录，结构示例：
 
@@ -57,7 +99,7 @@ deps/
     doorstop_config.ini
 ```
 
-然后构建插件：
+构建插件：
 
 ```powershell
 .\build-package.ps1
@@ -69,42 +111,19 @@ deps/
 dist/CozyIslandReadAloud/
 ```
 
-## Install
+## 从源码安装
 
-如果游戏安装在 Steam 默认库或其他目录，请显式传入游戏路径：
+如果游戏安装在 Steam 目录：
 
 ```powershell
 .\install-to-game.ps1 -GameDir "F:\Steam\steamapps\common\CozyIsland"
 ```
 
-安装后启动游戏，进入界面后按 `G/H/J/K` 测试朗读。
+如果没有传 `GameDir`，脚本会尝试使用默认相对路径。建议明确传入游戏目录，比较稳。
 
-## TTS Cache
+## 批量生成 MiMo 语音
 
-插件运行时的语音优先级：
-
-1. MiMo 预生成 WAV 缓存。
-2. MiMo 分段缓存命中。
-3. Windows TTS WAV 缓存。
-4. Windows TTS 现场生成并保存缓存。
-
-MiMo 缓存默认目录：
-
-```text
-audio_cache/mimo/zh-CN/
-```
-
-Windows TTS 缓存默认目录：
-
-```text
-audio_cache/windows/zh-CN/
-```
-
-这些缓存文件不会提交到 git。若需要分享预生成语音，建议压缩后放到 GitHub Releases。
-
-## Generate MiMo Cache
-
-设置 `MIMO_API_KEY` 后可以批量生成语音：
+设置 `MIMO_API_KEY` 后可以批量生成语音缓存：
 
 ```powershell
 $env:MIMO_API_KEY="your_api_key"
@@ -120,12 +139,33 @@ node .\tools\generate-mimo-cache.mjs
 - `MIMO_CONCURRENCY=1`
 - `MIMO_VOICE=冰糖`
 
-## Notes
+注意：批量语音缓存不建议提交到源码仓库。如果要个人备份，可以自行压缩保存。
 
-- 这个项目面向学习辅助，不提供自动游玩、作弊或修改存档功能。
-- 插件只读取当前可见 UI 文本并播放语音。
-- 游戏更新后，如果 UI 结构变化，部分区域识别规则可能需要调整。
+## 常见问题
 
-## License
+**按键没有声音怎么办？**
 
-MIT
+先确认游戏已经安装 BepInEx，插件 DLL 位于 `BepInEx/plugins/CozyIslandReadAloud/`。再查看 `BepInEx/LogOutput.log` 是否有插件加载日志。
+
+**第一次按键为什么要等一下？**
+
+如果没有命中 MiMo 或 Windows 缓存，插件会现场调用 Windows TTS 生成 WAV。生成完成后会自动播放，之后同一段文本会直接播放缓存。
+
+**为什么工作台不读左侧一长串列表？**
+
+工作台界面文字很多，全部朗读会很吵。插件检测到制作界面后，会优先朗读右侧当前选中配方的摘要，例如名称、说明、材料和是否不足。
+
+**可以提交完整游戏文本吗？**
+
+不建议。完整游戏文本来自商业游戏内容，公开提交会有版权风险。这个项目选择在运行时读取当前可见 UI 文本，而不是公开分发完整文本库。
+
+## 开源协议
+
+MIT License
+
+## 友情链接
+
+- [Linux DO](https://linux.do/)
+- [M-JYuan/Koma](https://github.com/M-JYuan/Koma)
+
+以上链接仅作为社区与开源项目参考，不代表本项目与对应项目存在从属或官方合作关系。
