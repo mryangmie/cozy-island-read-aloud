@@ -1,0 +1,38 @@
+# Build output
+dist/
+bin/
+obj/
+**/bin/
+**/obj/
+
+# Local caches and generated assets
+audio_cache/
+tmp/
+learning_text/
+
+# Local dependencies and game files
+deps/
+CozyIsland/
+*_Data/
+BepInEx/
+doorstop_config.ini
+winhttp.dll
+
+# Logs
+*.log
+LogOutput.log
+
+# User and editor files
+.vs/
+.vscode/
+*.user
+*.suo
+*.csproj.user
+
+# Secrets
+.env
+.env.*
+*secret*
+*token*
+*apikey*
+*api-key*
